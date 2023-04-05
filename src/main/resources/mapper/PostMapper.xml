@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyq.mapper.PostMapper">
+
+    <resultMap id="BaseResultMap" type="com.lyq.model.Post">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="PostListResultMap" type="com.lyq.model.Post">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <association column="user_id" property="userInfo">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="userType" column="user_type" jdbcType="CHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="CHAR"/>
+            <result property="avatarPath" column="avatar_path" jdbcType="VARCHAR"/>
+            <result property="userStatus" column="user_status" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="PostListWithComment" type="com.lyq.model.Post">
+        <id property="id" column="postId" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="INTEGER"/>
+        <result property="createdAt" column="postCreatedAt" jdbcType="TIMESTAMP"/>
+        <association column="user_id" property="userInfo">
+            <id property="id" column="userId" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+        </association>
+        <collection property="comments" ofType="com.lyq.model.Comment">
+            <id property="id" column="commentId"/>
+            <result property="comment" column="comment" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="postId" column="post_id" jdbcType="INTEGER"/>
+            <result property="createdAt" column="commentCreatedAt" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,content,
+        user_id,created_at
+    </sql>
+    <select id="listPostPage" resultMap="PostListWithComment">
+        select p.id         as postId,
+               p.title      as title,
+               p.content    as content,
+               u.id         as userId,
+               p.created_at as postCreateAt,
+               p.user_id    as userId,
+               u.username   as username
+        from sys_post p
+
+                 left outer join sys_user_info u on p.user_id = u.id
+        order by p.created_at
+    </select>
+    <select id="getPostById" resultMap="PostListWithComment">
+        select p.id          as postId,
+               p.title       as title,
+               p.content     as content,
+               u.id          as userId,
+               p.created_at  as postCreateAt,
+               p.user_id     as userId,
+               u.username    as username,
+               sc.comment    as comment,
+               sc.id            commentId,
+               sc.user_id,
+               sc.post_id,
+               sc.created_at as commentCreatedAt
+        from sys_post p
+                 left outer join sys_user_info u on p.user_id = u.id
+                 left join sys_comment sc on p.id = sc.post_id
+        where p.id = #{postId}
+        order by postId
+    </select>
+
+
+</mapper>
