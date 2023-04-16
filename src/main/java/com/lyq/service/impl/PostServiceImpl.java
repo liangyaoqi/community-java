@@ -35,7 +35,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     }
 
     @Override
-    public Post getPostById(String postId) {
+    public Post getPostById(int postId) {
         return postMapper.getPostById(postId);
     }
 }

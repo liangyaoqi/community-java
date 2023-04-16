@@ -4,55 +4,36 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 /**
- * 帖子表
- * @TableName sys_post
+ * 用户关注信息
+ * @TableName sys_follow
  */
-@TableName(value ="sys_post")
+@TableName(value ="sys_follow")
 @Data
-public class Post implements Serializable {
+public class Follow implements Serializable {
     /**
-     * 帖子唯一标识符，自增长
+     * 
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 标题
-     */
-    private String title;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 发帖人ID，外键关联用户表
+     * 
      */
     private String userId;
 
     /**
-     * 发帖时间
+     * 
      */
-    private Date createdAt;
+    private String followUserId;
 
     /**
-     * 是否已审核
+     * 
      */
-    private Object status;
-
-    @TableField(exist = false)
-    private UserInfo userInfo;
-
-    @TableField(exist = false)
-    private List<Comment> comments;
+    private String createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -68,13 +49,11 @@ public class Post implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        Post other = (Post) that;
+        Follow other = (Follow) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getTitle() == null ? other.getTitle() == null : this.getTitle().equals(other.getTitle()))
-            && (this.getContent() == null ? other.getContent() == null : this.getContent().equals(other.getContent()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getFollowUserId() == null ? other.getFollowUserId() == null : this.getFollowUserId().equals(other.getFollowUserId()))
+            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()));
     }
 
     @Override
@@ -82,11 +61,9 @@ public class Post implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getTitle() == null) ? 0 : getTitle().hashCode());
-        result = prime * result + ((getContent() == null) ? 0 : getContent().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getFollowUserId() == null) ? 0 : getFollowUserId().hashCode());
+        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         return result;
     }
 
@@ -97,11 +74,9 @@ public class Post implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", title=").append(title);
-        sb.append(", content=").append(content);
         sb.append(", userId=").append(userId);
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", status=").append(status);
+        sb.append(", followUserId=").append(followUserId);
+        sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface PostMapper extends BaseMapper<Post> {
     IPage<Post> listPostPage(IPage<Post> page);
 
-    Post getPostById(@Param("postId") String postId);
+    Post getPostById(@Param("postId") int postId);
 }
 
 

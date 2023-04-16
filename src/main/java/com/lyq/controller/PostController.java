@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @GetMapping()
-    public Result<?> getPostByPostId(@RequestParam("postId") String postId) {
+    public Result<?> getPostByPostId(@RequestParam("postId") int postId) {
         Post post = postService.getPostById(postId);
         if (ObjectUtil.isNull(post)) {
             return Result.failed("你查询的帖子不存在");
@@ -55,8 +55,31 @@ public class PostController {
     @GetMapping("/list")
     public List<Post> listPost(@RequestParam(value = "curPage", required = false, defaultValue = "0") long curPage,
                                @RequestParam(value = "pageSize", required = false, defaultValue = "10") long pageSize) {
-        Page<Post> postPage = new Page<>(curPage, pageSize,false);
+        Page<Post> postPage = new Page<>(curPage, pageSize, false);
         List<Post> posts = postService.pagePost(postPage);
+        if (posts.size() == 0) {
+            return Collections.emptyList();
+        }
+        return posts;
+    }
+
+    @GetMapping("/audit/{postId}")
+    public Result<?> audit(@PathVariable("postId") int postId) {
+        Post post = postService.getOne(new LambdaQueryWrapper<Post>().eq(Post::getId, postId));
+        if (ObjectUtil.isNull(post)) {
+            return Result.failed("你查询的帖子不存在");
+        }
+        post.setStatus("1");
+        boolean b = postService.updateById(post);
+        if (b) {
+            return Result.success("审核成功");
+        }
+        return Result.failed("审核失败");
+    }
+
+    @GetMapping("/audit/list")
+    public List<Post> auditList() {
+        List<Post> posts = postService.list(new LambdaQueryWrapper<Post>().eq(Post::getStatus, "0"));
         if (posts.size() == 0) {
             return Collections.emptyList();
         }

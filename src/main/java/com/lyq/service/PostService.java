@@ -15,5 +15,5 @@ public interface PostService extends IService<Post> {
 
     List<Post> pagePost(Page<Post> postPage);
 
-    Post getPostById(String postId);
+    Post getPostById(int postId);
 }

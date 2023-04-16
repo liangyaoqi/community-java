@@ -5,12 +5,18 @@
 <mapper namespace="com.lyq.mapper.PostMapper">
 
     <resultMap id="BaseResultMap" type="com.lyq.model.Post">
-        <id property="id" column="id" jdbcType="VARCHAR"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-        <result property="userId" column="user_id" jdbcType="INTEGER"/>
-        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="OTHER"/>
     </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,content,
+        user_id,created_at,status
+    </sql>
 
     <resultMap id="PostListResultMap" type="com.lyq.model.Post">
         <id property="id" column="id" jdbcType="VARCHAR"/>
@@ -18,6 +24,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="OTHER"/>
         <association column="user_id" property="userInfo">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -43,6 +50,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="userId" column="userId" jdbcType="INTEGER"/>
         <result property="createdAt" column="postCreatedAt" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="OTHER"/>
         <association column="user_id" property="userInfo">
             <id property="id" column="userId" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -56,10 +64,6 @@
         </collection>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,title,content,
-        user_id,created_at
-    </sql>
     <select id="listPostPage" resultMap="PostListWithComment">
         select p.id         as postId,
                p.title      as title,
@@ -67,10 +71,12 @@
                u.id         as userId,
                p.created_at as postCreateAt,
                p.user_id    as userId,
-               u.username   as username
+               u.username   as username,
+               p.status     as status
         from sys_post p
 
                  left outer join sys_user_info u on p.user_id = u.id
+        where p.status = '1'
         order by p.created_at
     </select>
     <select id="getPostById" resultMap="PostListWithComment">
@@ -90,8 +96,8 @@
                  left outer join sys_user_info u on p.user_id = u.id
                  left join sys_comment sc on p.id = sc.post_id
         where p.id = #{postId}
+          and p.status = '1'
         order by postId
     </select>
-
 
 </mapper>
