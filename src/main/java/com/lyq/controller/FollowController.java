@@ -33,9 +33,9 @@ public class FollowController {
         }
     }
 
-    @GetMapping("/delete/{userId}")
-    public Result delete(@PathVariable("userId") String userId) {
-        boolean b = followService.remove(new LambdaQueryWrapper<Follow>().eq(Follow::getUserId, userId));
+    @GetMapping("/delete/{followUserId}")
+    public Result delete(@PathVariable("followUserId") String followUserId) {
+        boolean b = followService.remove(new LambdaQueryWrapper<Follow>().eq(Follow::getFollowUserId, followUserId));
         if (b) {
             return Result.success("删除成功");
         } else {
