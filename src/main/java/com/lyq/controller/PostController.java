@@ -85,4 +85,15 @@ public class PostController {
         }
         return posts;
     }
+
+    @GetMapping("/search")
+    public Result search(@RequestParam("keyword") String keyword) {
+        List<Post> posts = postService.list(new LambdaQueryWrapper<Post>().like(Post::getTitle, keyword));
+        if (posts.size() == 0) {
+            return Result.failed("没有找到相关帖子");
+        }
+        return Result.success(posts);
+    }
+
+
 }
