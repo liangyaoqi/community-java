@@ -97,9 +97,8 @@ public class PostController {
 
     @GetMapping("/top")
     public Result<List<Post>> topPost() {
-        List<Post> posts = postService.list(new LambdaQueryWrapper<Post>().sortDesc(Post::getCreatedAt).last("limit 5"));
+        List<Post> posts = postService.list(new LambdaQueryWrapper<Post>().orderByDesc(Post::getCreatedAt).last("limit 5"));
         return Result.success(posts);
     }
-
 
 }
